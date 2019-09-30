@@ -1,0 +1,144 @@
+// Eggxercise by Jignesh Gharat and Nadine Valcin
+
+// movement control code based on: 
+// Mobile / Movement Controller by kjhollen
+// https://editor.p5js.org/kjhollen/sketches/Bkii5k29l
+
+// Countdown timer code based on: 
+// countdown timer by marynotari
+// https://editor.p5js.org/marynotari/sketches/S1T2ZTMp-
+
+// Sound effect from:
+// https://www.youtube.com/watch?v=NJPprfrG4sM
+
+
+let timer = 5
+var x, y;
+var maxSpeed = 200;
+let mySound;
+let img;
+let y1 = -75;
+let y2 = -60;
+
+function preload() {
+  // Load a sound file
+  soundFormats('mp3');
+  mySound = loadSound('hen01.mp3');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  
+  // initial egg position
+  x = windowWidth / 2;
+  y = windowHeight / 2;
+  
+  // sound
+  mySound.setVolume(100);
+  mySound.play();
+  
+  // broken egg image
+  img = loadImage('egg.png');
+}
+
+function draw() {
+
+  background(5, 127, 171);
+
+  if (timer >= 1) {
+// OPENING TITLE
+
+    //   title - egg animation 
+    if (y1 < windowHeight / 2 - 140) {
+      y1 = y1 + 4
+    } else {
+      y1 = windowHeight / 2 - 140
+    }
+
+    if (y2 < windowHeight / 2 - 125) {
+      y2 = y2 + 4
+    } else {
+      y2 = windowHeight / 2 - 125
+    }
+    //  title - egg drawing 
+    fill(255);
+    noStroke(0);
+    ellipse(windowWidth / 2 - 110, y1, 70, 110);
+    fill(252, 169, 3);
+    ellipse(windowWidth / 2 - 110, y2, 40, 50);
+
+    //  title - text 
+    textSize(60);
+    fill(255);
+    text('xercise', windowWidth / 2 + 25, windowHeight / 2 - 125);
+
+  }
+  //  title - countdown display
+  textAlign(CENTER, CENTER);
+  textSize(170);
+  fill(255)
+  text(timer, windowWidth / 2, windowHeight / 2 + 7);
+
+  if (frameCount % 60 == 0 && timer >= 1)
+
+  {
+    timer--;
+  }
+
+  if (timer == 0) {
+    textAlign(CENTER, CENTER);
+    textSize(170);
+    noStroke();
+    fill(5, 127, 171);
+    text(timer, windowWidth / 2, windowHeight / 2 + 7);
+//  END OF OPENING TITLE
+
+//  GAME START
+
+    // Egg movement
+    x += map(rotationY, -180, 180, -maxSpeed, maxSpeed);
+    y += map(rotationX, -180, 180, -maxSpeed, maxSpeed);
+
+    //Sound volume 
+
+    // Set the volume to a range between 0 and 1.0
+    let volume = map(x, 1, width, 0, 1);
+    volume = constrain(volume, 0, 1);
+    mySound.amp(volume);
+
+    // Set the rate to a range between 0.1 and 4
+    // Changing the rate alters the pitch
+    let speed = map(y, 1, height, 0, 2);
+    speed = constrain(speed, 0.01, 4);
+    mySound.rate(speed);
+
+    //  Egg shape and shadow
+    fill(0, 30);
+    noStroke()
+    ellipse(x + 10, y + 10, 120, 160);
+
+    fill(255);
+    noStroke();
+    ellipse(x, y, 100, 150);
+
+
+    // Egg touching edge (egg break)
+    if (x < 20 || x > windowWidth - 20 ||
+      y < 20 || y > windowHeight - 20) {
+      
+      // Broken egg screen
+      background(171, 5, 41);
+      
+      // broken egg image
+      imageMode(CENTER);
+      image(img, windowWidth / 2, windowHeight / 2);
+      
+      // broken egg text
+      textSize(40);
+      fill(0);
+      text('GAME OVER', windowWidth / 2, windowHeight / 2);
+
+    }
+  }
+
+}
